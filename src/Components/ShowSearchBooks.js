@@ -5,7 +5,6 @@ import BookEntries from './BookEntries'
 
 // To Do
 // MatchedBooks should have shelf with value none
-// MatchedBooks that have been moved to a shelf should reflect that in MyReads page
 
 //const ShowSearchBooks = (props) => {
 class ShowSearchBooks extends Component {
@@ -20,8 +19,7 @@ class ShowSearchBooks extends Component {
       	console.log(`inside ShowSearchBooks:componentDidMount()`)
 		this.setState( () => ({
         	screen: 'search'
-        })
-        )
+        }))
     	return this.props.onChangeScreen('search')
     }
 
@@ -35,7 +33,7 @@ class ShowSearchBooks extends Component {
       	
       	if(inputQuery.trim() !== '') {
           	console.log(`inputQuery.trim() is empty: ${inputQuery.trim() === ''}`)
-        	BooksAPI.search(inputQuery.trim(), 30).then( (matchedBooks) => {
+        	BooksAPI.search(inputQuery.trim(), 5).then( (matchedBooks) => {
             	this.setState( () => ({
                 	books: matchedBooks
                 }))
@@ -80,10 +78,10 @@ class ShowSearchBooks extends Component {
                     { this.state.query !== '' &&
                         <ul className='books-grid'>
                             {this.state.books.map( book => {
-                     			console.log(`book title: ${book.title}`)
-								console.log(`book shelf: ${book.shelf}`)
-								console.log(`book id: ${book.id}`)
-								book.authors.map( author => console.log(`author: ${author}`))
+                     			//console.log(`book title: ${book.title}`)
+								//console.log(`book shelf: ${book.shelf}`)
+								//console.log(`book id: ${book.id}`)
+								//book.authors.map( author => console.log(`author: ${author}`))
                                 return <BookEntries key={book.id} book={book} onChangeShelf={this.props.onChangeShelf} />
 							})}
                         </ul> 

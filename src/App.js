@@ -70,7 +70,87 @@ class BooksApp extends React.Component {
 	changeShelf = (bookToChange, oldShelf, newShelf) => {
       	if (newShelf !== oldShelf) {
           	console.log(`old shelf: ${oldShelf}, new shelf: ${newShelf}`)
-          	if (oldShelf === 'currentlyReading') {
+          	// check if book is currently on an existing book shelf
+          	if (oldShelf !== 'undefined') {
+                // update -- remove bookToChange from old shelf
+                if (oldShelf === 'currentlyReading') {
+                    console.log(`@@@@@@@@@@@@@@inside if oldShelf === 'currentlyReading'`)
+                    this.setState( prevState => ({
+                        currentlyReadingList: prevState.currentlyReadingList.filter( book => 
+                        	book.id !== bookToChange.id)
+                    }))
+                }
+                else if (oldShelf === 'wantToRead') {
+                    console.log(`@@@@@@@@@@@@@@inside else if oldShelf === 'wantToRead'`)
+                    this.setState( prevState => ({
+                        wantToReadList: prevState.wantToReadList.filter( book => book.id !== bookToChange.id )
+                    }))
+                }
+                else if (oldShelf === 'read') {
+                    console.log(`@@@@@@@@@@@@@@inside if oldShelf === 'read'`)
+                	this.setState( prevState => ({
+                    	readList: prevState.readList.filter( book => book.id !== bookToChange.id )
+                    }))
+                }
+            }
+            // adding book to new shelf and update the book shelf state
+            if (newShelf === 'currentlyReading') {
+                console.log(`inside if newShelf is ${newShelf}`)
+                bookToChange.shelf = newShelf
+                return this.setState( prevState => ({
+                    currentlyReadingList: [...prevState.currentlyReadingList, bookToChange]
+                }))
+            }
+            else if (newShelf === 'wantToRead') {
+                console.log(`inside if currentlyReading is ${newShelf}`)
+                bookToChange.shelf = newShelf
+                return this.setState( prevState => ({
+                    wantToReadList: [...prevState.wantToReadList, bookToChange]
+                }))
+            }
+            else if (newShelf === 'read') {
+                console.log(`inside if newShelf is ${newShelf}`)
+                bookToChange.shelf = newShelf
+                return this.setState( prevState => ({
+                    readList: [...prevState.readList, bookToChange]
+                }))
+            }
+        
+          
+          
+          
+            // ????????
+          	// why is the if statement not executed even though oldShelf === undefined?
+          	/*if (oldShelf === 'undefined') {
+              	console.log(`inside if oldShelf is ${oldShelf}`)
+            	if (newShelf === 'currentlyReading') {
+                  	console.log(`inside if newShelf is ${newShelf}`)
+                  	// bookToChange has a new shelf
+                    bookToChange.shelf = newShelf
+                  	// update -- add bookToChange to currentlyReadingList
+                	return this.setState( prevState => ({
+                    	currentlyReadingList: [...prevState.currentlyReadingList, bookToChange]
+                    }))
+                }
+              	else if (newShelf === 'wantToRead') {
+                  	console.log(`inside if currentlyReading is ${newShelf}`)
+                  	// bookToChange has a new shelf
+                  	bookToChange.shelf = newShelf
+                  	// update -- add bookToChange to wantToReadList
+                	return this.setState( prevState => ({
+                    	wantToReadList: [...prevState.wantToReadList, bookToChange]
+                    }))
+                }
+                else if (newShelf === 'read') {
+                  	console.log(`inside if newShelf is ${newShelf}`)
+                  	// bookToChange has a new shelf
+                  	bookToChange.shelf = newShelf
+                	return this.setState( prevState => ({
+                    	readList: [...prevState.readList, bookToChange]
+                    }))
+                }
+            }
+          	else if (oldShelf === 'currentlyReading') {
                 console.log(`@@@@@@@@@@@@@@inside if oldShelf === 'currentlyReading'`)
               	// updage -- remove bookToChange from currentlyReadingList
             	this.setState( prevState => ({
@@ -88,10 +168,13 @@ class BooksApp extends React.Component {
               	// update -- move bookToChange to readList
               	else if (newShelf === 'read') {
                   	// bookToChange has a new shelf
+                  	console.log(`newShelf is $(newShelf).`)
                   	bookToChange.shelf = newShelf
                 	this.setState( prevState => ({
+                      	//console.log(``)
                     	readList: [...prevState.readList, bookToChange]
                     }))
+                  	console.log(`readList should have been changed`)
                 }
     		}
             else if (oldShelf === 'wantToRead') {
@@ -139,21 +222,13 @@ class BooksApp extends React.Component {
                     	currentlyReadingList: [...prevState.currentlyReadingList, bookToChange]
                     }))
                 }
-            }
+            }*/
         }
     } 
 
   render() {
-      /*console.log(`inside App.js render(). readList is an array: ${this.state.readList instanceof Array}. 
-		  this.state.readList is ${typeof(this.state.readList)}`)*/
-
       return (
           <div className="app">
-			<div>
-            	{this.state.screen === 'home' && 
-           			(<div className='list-books-title'><h1>MyReads</h1></div>)}
- 				{this.state.screen === 'home' && (<div className='open-search'><Link to="search"></Link></div>)}
-			</div>
             <div>    
                 <Route path='/search' render={()=> (
                     <ShowSearchBooks 
@@ -164,33 +239,37 @@ class BooksApp extends React.Component {
                 )} />
             </div>
 			<div>
-           		<div className='list-books-content'>  
-                    <div className='bookshelf'>
-                        <Route exact path='/' render={()=> (
-                            <ShowReadingList 
-                                books={this.state.currentlyReadingList}
-                                onChangeShelf={this.changeShelf}
-                            />
-                        )} />
-                    </div>
-                    <div className='bookshelf'>
-                        <Route exact path='/' render={()=> (
-                            <ShowWantToReadList 
-                                books={this.state.wantToReadList}
-                                onChangeShelf={this.changeShelf} 
-                            />
-                        )} />
-                    </div>
-                    <div className='bookshelf'>
-                        <Route exact path='/' render={ ()=> 
-                            <ShowReadList 
-                                books={this.state.readList}
-                                onChangeShelf={this.changeShelf} 
-                            />
-                        }/>
-                    </div>
-          		</div>
-				</div>
+				<Route exact path='/' render={()=> 
+					(<div className='list-books-title'><h1>MyReads</h1></div> &&
+					<div className='open-search'><Link to="search"></Link></div>)
+				} />
+			</div>
+            <div className='list-books-content'>  
+                <div className='bookshelf'>
+                    <Route exact path='/' render={()=> (
+                        <ShowReadingList 
+                            books={this.state.currentlyReadingList}
+                            onChangeShelf={this.changeShelf}
+                        />
+                    )} />
+                </div>
+                <div className='bookshelf'>
+                    <Route exact path='/' render={()=> (
+                        <ShowWantToReadList 
+                            books={this.state.wantToReadList}
+                            onChangeShelf={this.changeShelf} 
+                        />
+                    )} />
+                </div>
+                <div className='bookshelf'>
+                    <Route exact path='/' render={ ()=> 
+                        <ShowReadList 
+                            books={this.state.readList}
+                            onChangeShelf={this.changeShelf} 
+                        />
+                    }/>
+                </div>
+          	</div>
           </div>
       )
   }

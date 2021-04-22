@@ -34,7 +34,6 @@ export const update = (book, shelf) =>
 
 export const search = (query, maxResults) =>
   fetch(`${api}/search`, {
-    //credentials: 'include', // added
     method: 'POST',
     headers: {
       ...headers,

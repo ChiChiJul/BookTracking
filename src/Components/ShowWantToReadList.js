@@ -8,7 +8,9 @@ const ShowWantToReadList = (props) => {
       		<div className='bookshelf-title'><h4>Want To Read</h4></div>
             <div className='bookshelf-books'>
                 <ul className='books-grid'>
-                    {props.books.map( book => <BookEntries key={book.id} book={book} onChangeShelf={props.onChangeShelf} /> )}
+                    {props.books.map( book => 
+      					<BookEntries key={book.id} book={book} onChangeShelf={props.onChangeShelf} 
+					/> )}
                 </ul>
 			</div>
 		</div>
