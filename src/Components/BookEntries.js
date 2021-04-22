@@ -5,7 +5,6 @@ class BookEntries extends Component {
     	value: ''
     }
 
-	
 	// arg this.state.value to this.props.onChangeShelf is empty
 	handleChange = (bookToChange, oldBookId, event) => {
       	// console.log(this.props.length)
@@ -26,36 +25,33 @@ class BookEntries extends Component {
 
         return (
             <div>
-                <li key={id} >
-                        <div className="book">
-                              <div className="book-top">
-                                  <div className="book-cover" 
-                                      style={{ 
-                                             width: 128, 
-                                             height: 188, 
-											 backgroundImage: `url(${bookToChange.imageLinks.thumbnail})` 
-                                      }}>
-                                  </div>
-									{/* even though books are displayed in the correct in their library based on the
-									// the book's shelf, the value for shelf is defaulted to currently reading */}
-                                  <div className="book-shelf-changer">
-                                      <select 
-                                            value={oldShelf} 
-                                            onChange={ (event) => 
-												this.handleChange(bookToChange, oldShelf, event) 
-											}>
-                                        <option value="move" disabled>Move to...</option>
-                                        <option value="currentlyReading">Currently Reading</option>
-                                        <option value="wantToRead">Want to Read</option>
-                                        <option value="read">Read</option>
-                                        <option value="none">None</option>
-                                      </select>
-                                    </div>
-                                </div>
-                              	<div className="book-title">{bookToChange.title}</div>
-                              	<div className="book-authors">{bookToChange.authors.map( author => author)}</div>
-								<div>{ this.state.value }</div>
+                <li key={id}>
+                <div className="book">
+                      <div className="book-top">
+                          <div className="book-cover" 
+                              style={{ 
+                                     width: 128, 
+                                     height: 188, 
+                                     backgroundImage: `url(${bookToChange.imageLinks.thumbnail})` 
+                              }}>
+                          </div>
+                          <div className="book-shelf-changer">
+                              <select 
+                                    value={oldShelf} 
+                                    onChange={ (event) => 
+                                        this.handleChange(bookToChange, oldShelf, event) 
+                                    }>
+                                <option value="move" disabled>Move to...</option>
+                                <option value="currentlyReading">Currently Reading</option>
+                                <option value="wantToRead">Want to Read</option>
+                                <option value="read">Read</option>
+                                <option value="none">None</option>
+                              </select>
                             </div>
+                        </div>
+                        <div className="book-title">{bookToChange.title}</div>
+                        <div className="book-authors">{bookToChange.authors.map( author => author)}</div>
+                    </div>
                 </li>
             </div>
         )

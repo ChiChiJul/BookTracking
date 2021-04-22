@@ -149,25 +149,22 @@ class BooksApp extends React.Component {
 
       return (
           <div className="app">
-          		
-               <div className='open-search'>
-                    <Route path='/search' render={()=> (
-                        <ShowSearchBooks 
-                            books={this.state.books} 
-                            onChangeScreen={this.changeScreen}
-                            onChangeShelf={this.changeShelf}
-                        />
-                    )} />
-                    {this.state.screen === 'home' &&
-                     <Link to="search"><a></a></Link>
-                    }
-                </div>
-
-           		<div className='list-books-title '>
-           			<h1>MyReads</h1>
-           		</div>
-
-           		<div className='list-books-content'>                 
+			<div>
+            	{this.state.screen === 'home' && 
+           			(<div className='list-books-title'><h1>MyReads</h1></div>)}
+ 				{this.state.screen === 'home' && (<div className='open-search'><Link to="search"></Link></div>)}
+			</div>
+            <div>    
+                <Route path='/search' render={()=> (
+                    <ShowSearchBooks 
+                        books={this.state.books} 
+                        onChangeScreen={this.changeScreen}
+                        onChangeShelf={this.changeShelf}
+                    />
+                )} />
+            </div>
+			<div>
+           		<div className='list-books-content'>  
                     <div className='bookshelf'>
                         <Route exact path='/' render={()=> (
                             <ShowReadingList 
@@ -193,6 +190,7 @@ class BooksApp extends React.Component {
                         }/>
                     </div>
           		</div>
+				</div>
           </div>
       )
   }
