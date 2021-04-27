@@ -5,17 +5,9 @@ class BookEntries extends Component {
     	value: ''
     }
 
-	// arg this.state.value to this.props.onChangeShelf is empty
 	handleChange = (bookToChange, oldShelf, event) => {
-      	// console.log(this.props.length)
-      	// console.log(`inside BookEntries, handleChange`)
-      	console.log(`bookToChange id: ${bookToChange.id}`)
-      	// value is set, then callback this.props.onChangeShelf() is called
-      	console.log(`inside BookEntries, inside handleChange`)
-    	return this.setState( {value: event.target.value}, console.log(`value: ${event.target.value} 
-			:::: inside BookEntries before onChangeShelf`),
-			this.props.onChangeShelf(bookToChange, oldShelf, event.target.value)
-		)
+    	this.setState( { value: event.target.value } )
+      	this.props.onChangeShelf(bookToChange, oldShelf, event.target.value)
     }
   
     render() {
@@ -50,8 +42,13 @@ class BookEntries extends Component {
                             </div>
                         </div>
                         <div className="book-title">{bookToChange.title}</div>
-						<div>{bookToChange.id}</div>
-                        <div className="book-authors">{bookToChange.authors.map( author => author)}</div>
+						<div>
+							<ul className="book-authors">
+								{bookToChange.authors !== undefined && bookToChange.authors.map( author =>
+                                    (<li key={author}> {author} </li>)
+								)}
+							</ul>
+						</div>
                     </div>
                 </li>
             </div>

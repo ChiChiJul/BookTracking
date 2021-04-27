@@ -37,11 +37,8 @@ class BooksApp extends React.Component {
 
 	// it's executed once when component is mounted.
 	componentDidMount() {
-      	console.log("inside componentDidMount")
     	BooksAPI.getAll()
 		.then( (books) => {
-          	/*console.log(`inside App.js componenetDidMount. books is undefined:
-				${books === undefined}. ****Total number of books: ${books.length}****`)*/
         	this.setState( () => ({
             	books,
                 screen: 'home',
@@ -61,168 +58,56 @@ class BooksApp extends React.Component {
     }
 
 	changeScreen = (pageName) => {
-      	console.log(`screen: ${pageName}`)
     	this.setState( {screen: pageName} )
     }
 
-	// ****************
-	// need to update state after changeShelf
+	// update state and upend server after shelf change
 	changeShelf = (bookToChange, oldShelf, newShelf) => {
       	if (newShelf !== oldShelf) {
-          	console.log(`old shelf: ${oldShelf}, new shelf: ${newShelf}`)
-          	// check if book is currently on an existing book shelf
-          	if (oldShelf !== 'undefined') {
-                // update -- remove bookToChange from old shelf
-                if (oldShelf === 'currentlyReading') {
-                    console.log(`@@@@@@@@@@@@@@inside if oldShelf === 'currentlyReading'`)
+          	// update -- remove book from old shelf
+          	switch (oldShelf) {
+                case 'currentlyReading':
                     this.setState( prevState => ({
                         currentlyReadingList: prevState.currentlyReadingList.filter( book => 
-                        	book.id !== bookToChange.id)
+                            book.id !== bookToChange.id)
                     }))
-                }
-                else if (oldShelf === 'wantToRead') {
-                    console.log(`@@@@@@@@@@@@@@inside else if oldShelf === 'wantToRead'`)
+                    break
+                case 'wantToRead':
                     this.setState( prevState => ({
                         wantToReadList: prevState.wantToReadList.filter( book => book.id !== bookToChange.id )
                     }))
-                }
-                else if (oldShelf === 'read') {
-                    console.log(`@@@@@@@@@@@@@@inside if oldShelf === 'read'`)
-                	this.setState( prevState => ({
-                    	readList: prevState.readList.filter( book => book.id !== bookToChange.id )
+                    break
+                case 'read':
+                    this.setState( prevState => ({
+                        readList: prevState.readList.filter( book => book.id !== bookToChange.id )
                     }))
-                }
+                    break
+                default:
             }
-            // adding book to new shelf and update the book shelf state
-            if (newShelf === 'currentlyReading') {
-                console.log(`inside if newShelf is ${newShelf}`)
-                bookToChange.shelf = newShelf
-                return this.setState( prevState => ({
-                    currentlyReadingList: [...prevState.currentlyReadingList, bookToChange]
-                }))
-            }
-            else if (newShelf === 'wantToRead') {
-                console.log(`inside if currentlyReading is ${newShelf}`)
-                bookToChange.shelf = newShelf
-                return this.setState( prevState => ({
-                    wantToReadList: [...prevState.wantToReadList, bookToChange]
-                }))
-            }
-            else if (newShelf === 'read') {
-                console.log(`inside if newShelf is ${newShelf}`)
-                bookToChange.shelf = newShelf
-                return this.setState( prevState => ({
-                    readList: [...prevState.readList, bookToChange]
-                }))
-            }
-        
-          
-          
-          
-            // ????????
-          	// why is the if statement not executed even though oldShelf === undefined?
-          	/*if (oldShelf === 'undefined') {
-              	console.log(`inside if oldShelf is ${oldShelf}`)
-            	if (newShelf === 'currentlyReading') {
-                  	console.log(`inside if newShelf is ${newShelf}`)
-                  	// bookToChange has a new shelf
-                    bookToChange.shelf = newShelf
-                  	// update -- add bookToChange to currentlyReadingList
-                	return this.setState( prevState => ({
-                    	currentlyReadingList: [...prevState.currentlyReadingList, bookToChange]
+          	// assign book to new shelf
+			bookToChange.shelf = newShelf
+          	// add book to new shelf and update the book shelf state
+            switch(newShelf) {
+            	case 'currentlyReading':
+                    this.setState( prevState => ({
+                        currentlyReadingList: [...prevState.currentlyReadingList, bookToChange]
                     }))
-                }
-              	else if (newShelf === 'wantToRead') {
-                  	console.log(`inside if currentlyReading is ${newShelf}`)
-                  	// bookToChange has a new shelf
-                  	bookToChange.shelf = newShelf
-                  	// update -- add bookToChange to wantToReadList
-                	return this.setState( prevState => ({
-                    	wantToReadList: [...prevState.wantToReadList, bookToChange]
+                    break
+                case 'wantToRead':
+                    this.setState( prevState => ({
+                        wantToReadList: [...prevState.wantToReadList, bookToChange]
                     }))
-                }
-                else if (newShelf === 'read') {
-                  	console.log(`inside if newShelf is ${newShelf}`)
-                  	// bookToChange has a new shelf
-                  	bookToChange.shelf = newShelf
-                	return this.setState( prevState => ({
-                    	readList: [...prevState.readList, bookToChange]
+                    break
+                case 'read':
+                    this.setState( prevState => ({
+                        readList: [...prevState.readList, bookToChange]
                     }))
-                }
-            }
-          	else if (oldShelf === 'currentlyReading') {
-                console.log(`@@@@@@@@@@@@@@inside if oldShelf === 'currentlyReading'`)
-              	// updage -- remove bookToChange from currentlyReadingList
-            	this.setState( prevState => ({
-                  	currentlyReadingList: prevState.currentlyReadingList.filter( book => 
-                                                                                book.id !== bookToChange.id)
-                }))
-              	// update -- move bookToChange to wantToReadList
-              	if (newShelf === 'wantToRead') {
-                  	// bookToChange has a new shelf
-                  	bookToChange.shelf = newShelf
-                	this.setState( prevState => ({
-                    	wantToReadList: [...prevState.wantToReadList, bookToChange]
-                    }))
-                }
-              	// update -- move bookToChange to readList
-              	else if (newShelf === 'read') {
-                  	// bookToChange has a new shelf
-                  	console.log(`newShelf is $(newShelf).`)
-                  	bookToChange.shelf = newShelf
-                	this.setState( prevState => ({
-                      	//console.log(``)
-                    	readList: [...prevState.readList, bookToChange]
-                    }))
-                  	console.log(`readList should have been changed`)
-                }
-    		}
-            else if (oldShelf === 'wantToRead') {
-              	console.log(`@@@@@@@@@@@@@@inside else if oldShelf === 'wantToRead'`)
-              	// update -- remove bookToChange from wantToReadList
-				this.setState( prevState => ({
-                  	wantToReadList: prevState.wantToReadList.filter( book => book.id !== bookToChange.id )
-                }))
-              	// update -- move bookToChange to currentlyReadingList
-              	if (newShelf === 'currentlyReading') {
-                  	// bookToChange has a new shelf
-                  	bookToChange.shelf = newShelf
-                	this.setState( prevState => ({
-                    	currentlyReadingList: [...prevState.currentlyReadingList, bookToChange]
-                    }))
-                }
-              	// update -- move bookToChange to readList
-              	else if (newShelf === 'read') {
-                  	// bookToChange has a new shelf
-                  	bookToChange.shelf = newShelf
-                	this.setState( prevState => ({
-                    	readList: [...prevState.readList, bookToChange]
-                    }))
-                }
-            }
-            else if (oldShelf === 'read') {
-                console.log(`@@@@@@@@@@@@@@inside else if oldShelf === 'read'`)
-              	// update -- remove bookToChange from readList
-           		this.setState( prevState => ({
-                	readList: prevState.readList.filter( book => book.id !== bookToChange.id )
-                }))
-              	if (newShelf === 'wantToRead') {
-                  	// bookToChange has a new shelf
-                  	bookToChange.shelf = newShelf
-                  	// update -- add bookToChange to wantToReadList
-                	this.setState( prevState => ({
-                    	wantToReadList: [...prevState.wantToReadList, bookToChange]
-                    }))
-                }
-              	else if (newShelf === 'currentlyReading') {
-                  	// bookToChange has a new shelf
-                    bookToChange.shelf = newShelf
-                  	// update -- add bookToChange to currentlyReadingList
-                	this.setState( prevState => ({
-                    	currentlyReadingList: [...prevState.currentlyReadingList, bookToChange]
-                    }))
-                }
-            }*/
+                    break
+              	default:
+            } 
+
+          	// update backend server of the book shelf with new book
+          	BooksAPI.update(bookToChange, newShelf)
         }
     } 
 

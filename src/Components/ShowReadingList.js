@@ -9,7 +9,6 @@ const ShowReadingList = (props) => {
             <div className='bookshelf-books'>
                 <ul className='books-grid'>
                     { props.books.map( book =>
-                        // book.id !== undefined &&
                         <BookEntries key={book.id} book={book} onChangeShelf={props.onChangeShelf} />) }
                 </ul>
         	</div>

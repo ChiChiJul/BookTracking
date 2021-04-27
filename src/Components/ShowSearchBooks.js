@@ -3,10 +3,6 @@ import { Link } from 'react-router-dom'
 import * as BooksAPI from '../BooksAPI'
 import BookEntries from './BookEntries'
 
-// To Do
-// MatchedBooks should have shelf with value none
-
-//const ShowSearchBooks = (props) => {
 class ShowSearchBooks extends Component {
 	state = {
     	query: '',
@@ -16,50 +12,55 @@ class ShowSearchBooks extends Component {
 
 	// executes when search page is loaded
 	componentDidMount() {
-      	console.log(`inside ShowSearchBooks:componentDidMount()`)
 		this.setState( () => ({
         	screen: 'search'
         }))
-    	return this.props.onChangeScreen('search')
+    	this.props.onChangeScreen('search')
     }
 
 	// executes when search bar to clicked
 	updateQuery = (inputQuery) => {
-      	console.log(`inputQuery: ${inputQuery}`)
-    	this.setState( () => ({
-        	query: inputQuery.trim()
-        }))
-		//console.log(`this.state.query is empty: ${this.state.query === ''}`)
-      	
+    	this.setState( { query: inputQuery.trim() })
+      	// if input is not empty, search for books that match the input
       	if(inputQuery.trim() !== '') {
-          	console.log(`inputQuery.trim() is empty: ${inputQuery.trim() === ''}`)
-        	BooksAPI.search(inputQuery.trim(), 5).then( (matchedBooks) => {
-            	this.setState( () => ({
-                	books: matchedBooks
-                }))
-            })
+            try {
+                BooksAPI.search(inputQuery.trim(), 5).then( (matchedBooks) => {
+                    if (matchedBooks.length !== undefined) {
+                        matchedBooks.map( book => {
+                          	console.log(`updateQuery`)
+                            if(book.imageLinks === undefined) {
+                                book.imageLinks = ''
+                            }
+                            else if(book.shelf === undefined) {
+                                book.shelf = 'none'
+                            }
+                            else if(book.authors.length === undefined) {
+                                  book.authors = []
+                            }
+                            return book
+                        })
+                        this.setState( {books: matchedBooks} )
+                    }
+                    // if search has no match/empty, books is set to empty
+                    else if(matchedBooks.length === undefined) {
+                        console.log(`search is undefined. matchedBooks length: ${matchedBooks.length}`)
+                        this.setState( () => ({
+                            books: []
+                        }))
+                    }
+                })
+                } catch (error) {
+                console.log(`${error}`)
+            }
         }
     }
-
-// self executing function not working
-/*(()=> {
-    	if(this.state.query !== '') {
-        	console.log(`hi`)
-        }
-    })()*/
-
 
 	// executes when back arrow is clicked
 	componentWillUnmount() {
-      	console.log(`inside ShowSearchBooks:componentWillUnmount()`)
-    	return this.props.onChangeScreen('home')
+    	this.props.onChangeScreen('home')
     }
 
 	render() {
-        // destructure
-        // const { query } = this.state
-        // const { books } = this.state
-
     	return(
         	<div>
           		<div className='search-books-bar'>         		
@@ -67,7 +68,6 @@ class ShowSearchBooks extends Component {
           			<span className='search-books-input-wrapper'>
                         <input 
                             type="text"
-                            
                             placeholder="Search by title or author"
                             value={this.state.query} 
                             onChange={(event) => this.updateQuery(event.target.value)} 
@@ -75,19 +75,14 @@ class ShowSearchBooks extends Component {
 					</span>
 				</div>
 				<div className='search-books-results'>
-                    { this.state.query !== '' &&
+                    { this.state.books.length !== 0 &&
                         <ul className='books-grid'>
                             {this.state.books.map( book => {
-                     			//console.log(`book title: ${book.title}`)
-								//console.log(`book shelf: ${book.shelf}`)
-								//console.log(`book id: ${book.id}`)
-								//book.authors.map( author => console.log(`author: ${author}`))
                                 return <BookEntries key={book.id} book={book} onChangeShelf={this.props.onChangeShelf} />
 							})}
                         </ul> 
                     }
 				</div>
-				
         	</div>
         )
     }
