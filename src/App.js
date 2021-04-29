@@ -105,9 +105,8 @@ class BooksApp extends React.Component {
                     break
               	default:
             } 
-
           	// update backend server of the book shelf with new book
-          	BooksAPI.update(bookToChange, newShelf)
+          	BooksAPI.update(bookToChange, newShelf).then( res => res)
         }
     } 
 
